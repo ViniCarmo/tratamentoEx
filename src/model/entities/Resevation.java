@@ -38,9 +38,18 @@ public class Resevation {
         return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
     }
 
-    public void updateDates(Date checkin, Date checkout){
+    public String updateDates(Date checkin, Date checkout){
+
+        Date now = new Date();
+        if (checkin.before(now) || checkout.before(now)) {
+            return "Erro na reserva, a reserva esta a frente da data de hoje";
+        }if (!checkout.after(checkin)) {
+            return "Erro na reserva: Checkout depois do checkin";
+        }
+
         this.checkin = checkin;
         this.checkout = checkout;
+        return null;
     }
 
     @Override
