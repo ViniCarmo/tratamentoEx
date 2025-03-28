@@ -1,5 +1,7 @@
 package model.entities;
 
+import model.exceptions.DomainExceptions;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -11,7 +13,10 @@ public class Resevation {
 
     private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-    public Resevation(int roomNumber, Date checkin, Date checkout) {
+    public Resevation(int roomNumber, Date checkin, Date checkout){
+        if (!checkout.after(checkin)) {
+            throw new DomainExceptions("Erro na reserva: Checkout antes do checkin") ;
+        }
         this.roomNumber = roomNumber;
         this.checkin = checkin;
         this.checkout = checkout;
@@ -38,18 +43,17 @@ public class Resevation {
         return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
     }
 
-    public String updateDates(Date checkin, Date checkout){
+    public void updateDates(Date checkin, Date checkout){
 
         Date now = new Date();
         if (checkin.before(now) || checkout.before(now)) {
-            return "Erro na reserva, a reserva esta a frente da data de hoje";
+            throw new DomainExceptions("Erro na reserva, a reserva esta em uma data passada");
         }if (!checkout.after(checkin)) {
-            return "Erro na reserva: Checkout depois do checkin";
+            throw new DomainExceptions("Erro na reserva: Checkout antes do checkin") ;
         }
 
         this.checkin = checkin;
         this.checkout = checkout;
-        return null;
     }
 
     @Override
