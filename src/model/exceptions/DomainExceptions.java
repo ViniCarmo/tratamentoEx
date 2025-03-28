@@ -10,4 +10,5 @@ public class DomainExceptions extends  RuntimeException{
         super(msg);
     }
 
+
 }
